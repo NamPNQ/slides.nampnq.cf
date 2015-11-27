@@ -150,7 +150,7 @@ vs
 ### Python
 ```python
 def my_memory_function():
-    cats = get_all_teh_images_on_imgur
+    cats = get_all_teh_images_on_imgur()
     process_images(cats) # Whoa, it's is takin up a lot of memory
 # DELETE THE KITTIES
 # the cats variable doesn't exist anymore! We now have memory for more things!
@@ -772,20 +772,278 @@ fn main(){
 }
 ```
 ---
-# Garbage Collection and RC
-- There are other ways of managing memory, such as garbage collection
+# Garbage Collection
+- Java, Python, Ruby, C#, Scala, Go...
+- Programmer creates objects. However, the computer is responsible to remove them.
+- No explicit malloc and free
+	- Therefore no mistake
 
-- Python and Ruby are both garbage collected languages.
-	- Pauses when the interpreter decides it's time to clean up
-	- Makes implementing certain datastructures like graphs significantly easier.
+.center[
+**Is the world saved?**
+]
+---
+# The real life is not easy...
+- Computer cannot know the exact timing that each object should be freed.
+	- Tracing GC:GC engine should track all objects periodically
+	- reference counting: every object has a counter; the number of pointers referencing itself.
 
-- Rust does not have garbage collection...but it has RC
-	- RC stands for reference counting and is sort of a "GC-lite"
+- Both ways need more memory and CPU power.
+---
+# Garbage Collection
+- No predictability
+	- cannot used for real-time system
+- Limited concurrency
+	- global interpreter lock
+- Larger code size
+	- VM(or GC) mus included
+---
+# System program
+- Must be FAST
+- Must has runtime overhead **as little as possible**
+- Must be memory SAFE
+- Should be possible to direct memory access.
+- GC cannot be used in such area!
+---
+# Rust's Solution
+
+Type system enforces **ownership and borrowing**:
+
+- All memory has a clear owner.
+- Others can borrow from the owner.
+- Owner cannot free or mutate the memory while it is borrowed.
+
+---
+# Rust programing language
+**Rust** is a systems programming language that runs blazingly fast, prevents segfaults, and guarantees thread safety. 
+- zero-cost abstractions (done at complile time)
+- move semantics
+- guaranteed memory safety
+- threads without data races
+- trait-based generics
+- pattern matching
+- type inference
+- minimal runtime
+- efficient C bindings
+
+---
+# Ownership
+```rust
+let a = vec![1,2,3];
+// Vec[1,2,3] is now owned by a.
+
+let b = a;
+// Vec[1,2,3] is now owned by b not a.
+
+println!("a[0] = {}", a[0]);
+// ERROR: used of moved value: a
+// println!("a[0] = {}", a[0]);
+//                       ^
+```
+.center[
+[**Try It**](http://is.gd/Ol2Xxj)
+]
+---
+# Borrowing
+```rust
+fn please_do(something: Vec<u16>){
+	// |
+	// |  every vector passed into this function
+	// |  will be owned by this function
+	// |  and available only in this scope
+	// |
+}
+
+let a = vec![1,2,3];
+// Vec[1,2,3] is owned by a.
+
+please_do(a);// ownership moved
+
+println!("a[0] = {}", a[0]);
+// ERROR: used of moved value: a
+// println!("a[0] = {}", a[0]);
+//                       ^
+```
+.center[
+[**Try It**](http://is.gd/Pfd6CU)
+]
+---
+# Lifetime
+```rust
+fn main(){
+	let i = 3; // Life time for `i` starts. ------------
+	//                                                 /
+	{ //                                               /
+		let borrow1 = &i; // `borrow1` starts. ------- /
+		//                                           / /
+		println!("borrow1: {}", borrow1); //         / /
+	} // `borrow1` ends. ----------------------------  /                      
+	//                                                 /
+	{ //                                               /
+		let borrow2 = &i; // `borrow2` starts. ------- /
+		//                                           / /
+		println!("borrow2: {}", borrow2); //         / /
+	} // `borrow2` ends. ----------------------------  /
+	//                                                 /
+}   // Lifetime ends. ---------------------------------
+```
+.center[
+[**Try It**](http://is.gd/jH87Xn)
+]
+---
+# Other features of Rust
+---
+# Pattern matching
+
+```rust
+fn main() { 
+	let x = 5; 
+	match x { 
+		1 => println!("one"), 
+		2 => println!("two"), 
+		3 => println!("three"), 
+		4 => println!("four"), 
+		5 => println!("five"), 
+		_ => println!("something else"), 
+	} 
+}
+```
+.center[
+[**Try It**](http://is.gd/9sBZ0l)
+]
+---
+# Pattern matching
+
+```rust
+fn main() { 
+	let x = 5; 
+	match x { 
+		1 | 2 => println!("one or two"), 
+		3 => println!("three"), 
+		4 ... 7 => println!("4 through 7"), 
+		_ => println!("anything"), 
+	} 
+}
+```
+.center[
+[**Try It**](http://is.gd/SXk8GR)
+]
+---
+# Pattern matching
+
+```rust
+fn main(){ 
+	struct Point { 
+		x: i32, 
+		y: i32, 
+	} 
+	let origin = Point { x: 0, y: 0 }; 
+	match origin { 
+		Point { x, .. } => println!("x is {}", x), 
+	} 
+}
+```
+.center[
+[**Try It**](http://is.gd/zzAKAY)
+]
+---
+# Threads
+```rust
+use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let result = 5;
+        tx.send(result);
+    });
+
+    let result = rx.recv().unwrap();
+    println!("{}", result);
+}
+```
+.center[
+[**Try It**](http://is.gd/jCRAkI)
+]
+---
+# Threads & safety
+```rust
+use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+    let x = Box::new(5);
+
+    thread::spawn(move || {
+        let result = 5 + *x;
+        tx.send(result);
+    });
+
+    let result = rx.recv().unwrap();
+    println!("{}", result);
+}
+```
+.center[
+[**Try It**](http://is.gd/cJfFD6)
+]
+---
+```rust
+use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+    let mut x = Box::new(5);
+    thread::spawn(move || {
+        let result = 5 + *x;
+        tx.send(result);
+    });
+
+    *x += 5;
+
+    let result = rx.recv().unwrap();
+    println!("{}", result);
+}
+//<anon>:12:5: 12:12 error: use of moved value: `*x` [E0382]
+//<anon>:12     *x += 5;
+//              ^~~~~~~
+//<anon>:12:5: 12:12 help: see the detailed explanation for E0382
+//<anon>:7:19: 10:6 note: `x` moved into closure environment here because it has type `Box<i32>`, which is non-copyable
+//<anon>: 7     thread::spawn(move || {
+//<anon>: 8         let result = 5 + *x;
+//<anon>: 9         tx.send(result);
+//<anon>:10     });
+```
+.center[
+[**Try It**](http://is.gd/14NaI0)
+]
+---
+# Closures
+
+```rust
+fn main(){ 
+	let nums = [1, 2, 3];
+    let square = |x| x * x;
+    let max: Vec<i32> = nums.iter().map(square).collect();
+    println!("{:?}", max);
+}
+```
+.center[
+[**Try It**](http://is.gd/9oZ7xF)
+]
+---
+# More and more..
 ---
 class: center, middle, dark
 # .biggest[Q&A]
 ---
 # Futher Reading
+- [doc.rust-lang.org/nightly/book](http://doc.rust-lang.org/nightly/book)
+- [rustbyexample.com](http://rustbyexample.com)
+- IRC Community
+- Docs... the [beautiful docs.](https://doc.rust-lang.org/nightly/std/)
 ---
 class: center, middle, dark
 # Thank you!
