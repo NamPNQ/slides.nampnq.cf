@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>{{ slides[0].title }}</title>
+    <script src="../bower_components/platform/platform.js"></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <link rel="import" href="../bower_components/google-slides/google-slides.html">
+    <link rel="import" href="../bower_components/font-roboto/roboto.html">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body unresolved>
+    <google-slides>
+        {% for slide in slides %} 
+            {% if loop.index0 == 0 %}
+            <div is="google-slide" class="googlegreen" layout vertical center center-justified>
+                <h1>{{ slide.title }}</h1>
+                <p>
+                    <google-slide-author avatar="{{ slide.avatar }}" twitter="{{ slide.twitter }}" plus="{{ slide.plus }}">
+                    </google-slide-author>
+                </p>
+            </div>
+            {% else %}
+            <google-slide class="{{ slide.class or " "}}" layout vertical center center-justified>
+                <h1>{{ slide.title }}</h1> 
+                {{- slide.content -}}
+            </google-slide>
+            {% endif %} 
+        {% endfor %}
+    </google-slides>
+</body>
+
+</html>

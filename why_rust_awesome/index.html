@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Why Rust Awesome</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Amaranth);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif';}
+      .title {
+        background-image: url(../sir.png);
+        background-repeat:no-repeat;
+        background-size:cover;
+        background-position: -1000% !important;
+        text-align: right !important;
+      }
+      h1, h2, h3 {
+        font-family: 'Amaranth';
+        font-weight: normal;
+      }
+      h2 { color: #777 }
+      h3 { margin: 0; }
+      table,td,th {border: 1px solid #aaa; border-collapse: collapse;}
+      td, th {padding: 5px;}
+      .bigger {font-size: 100px;}
+      .evenbigger {font-size: 130px;}
+      .evenbiggerthanthat {font-size: 160px;}
+      .biggest {font-size: 190px;}
+      img.bump {margin-top: 30px;}
+      .dark { background: #272822; color: #fff;}
+      .esplosion {background-image: url(img/giphy.gif);background-repeat:no-repeat;background-size:cover;}
+      .thehorror {background-image: url(img/giphy2.gif);background-repeat:no-repeat;background-size:cover;}
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .white > * {color: #fff !important;}
+      .compare-table, .compare-table td, .compare-table th { border: 0}
+       /* Two-column layout */
+      .left-column {
+        width: 40%;
+        float: left;
+      }
+      .right-column {
+        width: 50%;
+        float: right;
+      }
+      /* Memory for ex2 */
+      .ex2 tbody{
+      	color: white;
+      }
+      .ex2 tbody>tr:nth-last-child(1), .ex2 tbody>tr:nth-last-child(2){
+      	background-color: blue;
+      }
+      .ex2 tbody>tr:nth-last-child(3), 
+      .ex2 tbody>tr:nth-last-child(4),
+      .ex2 tbody>tr:nth-last-child(5){
+      	background-color: red;
+      }
+      .ex2 tbody>tr:nth-last-child(6){
+      	background-color: purple;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Why Rust Awesome?
+*An introduction to the Rust programing language*
+
+![rust-logo](https://www.rust-lang.org/logos/rust-logo-blk.svg)
+
+Nam Pham ([@nampnq](http://twitter.com))
+
+Barcamp2015
+
+---
+# Disclaimer
+
+- I am an Rust newbie
+
+---
+# Why Rust?
+
+
+<table style='margin:auto' class="compare-table">
+  <tr>
+    <td style=''>C/C++</td>
+    <td style='text-align:center'></td>
+    <td style='text-align:center'>Java</td>
+    <td style='text-align:right'>Python</td>
+  </tr>
+  <tr>
+    <td colspan='4'>
+    <div style='background:linear-gradient(to right, #d00, #00d);
+            width:600px; height: 20px;margin:auto;
+            border-radius:5px;'/>
+    </td>
+  </tr>
+  <tr>
+    <td colspan='2' style='font-size:80%'>
+      More control,<br/>less safety
+    </td>
+    <td colspan='2' style='text-align:right;font-size:80%'>
+      Less control,<br/>more safety
+    </td>
+  </tr>
+</table>
+<div style='background:green;margin:auto;width:400px;margin-top:50px;
+            border-radius:5px;padding:5px; font-weight: bold; text-align:center'>
+  Rust
+  <p style='font-size:80%'>
+    More control, more safety
+  </p>
+</div>
+
+---
+class: center, middle, dark
+### Safe
+vs
+### Unsafe
+---
+# Example
+### Python
+Python's interpreter enforces sanity in your code.
+```python
+>>> a = ['a', 'b', 'c']
+>>> a[2]
+'c'
+>>> a[5] # uh oh
+IndexError: list index out of range
+```
+### C
+In C, you can do whatever the heck you want.
+```c
+char a[] = {'a', 'b', 'c'};
+a[2]
+//=> 'c'
+a[5] // Sure! Have some garbage!
+//=> ajskdi&E3j ... Error: segfault
+```
+---
+class: center, middle, dark
+### Automatic Memory Layout and Garbage Collection
+vs
+### Manual Memory Layout and Management
+---
+# Example
+### Python
+```python
+def my_memory_function():
+    cats = get_all_teh_images_on_imgur
+    process_images(cats) # Whoa, it's is takin up a lot of memory
+# DELETE THE KITTIES
+# the cats variable doesn't exist anymore! We now have memory for more things!
+```
+
+### C
+```c
+void my_memory_function() {
+    // allocate the memory for a bunch of cat images
+    images *cats = malloc(sizeof(cat_image) * NUMBER_OF_CATS_ON_IMGUR);
+    get_all_teh_images_on_imgur(cats); // now, we can actually get the images
+    process_images(cats);
+    // Kitties still live in memory!
+    free(cats); // don't forget this, or else this memory will stay reserved for cats
+    // oop, now they're gone
+}
+```
+---
+class: center, middle, dark
+# Here's the thing
+
+---
+class: center, middle, dark
+# YOU MUST
+
+---
+class: center, middle, dark
+# .bigger[ALWAYS]
+
+---
+class: center, middle, dark
+# .evenbigger[BE AWARE]
+
+---
+class: center, middle, dark
+# .evenbiggerthanthat[OF YOUR]
+
+---
+class: center, middle, dark, esplosion
+# .biggest[MEMORY LAYOUT]
+---
+#The coming masses...
+- A lagre amount of new Rustaceans are:
+	- C/C++ programmers who've been burnt:
+		- Null Pointers
+		- Uninitialized Memory
+		- Data races
+
+	- High-level language users who simply haven't had to think about it
+		- Long running GC cycles
+		- Lack of optimization routes
+		- Not having a choice
+
+---
+# This talk
+
+An overview to System Programing:
+- Memory Management:
+	- Stack
+	- Heap
+	- Pointers
+- Basic Data Representation
+
+Rust:
+- Ownership
+- Borrowing
+- Lifetimes
+
+---
+As simple as it gets
+
+```rust
+fn main() {
+	let foo = 1;
+	let bar = 3;
+}
+```
+---
+Main is called
+
+```rust
+fn main() { // <--
+	let foo = 1;
+	let bar = 3;
+}
+```
+
+Memory
+
+.center[
+ Address | Name  | Value
+---------|-------|------
+   1     |       |
+   0     |       | 
+]
+---
+Main is called
+
+```rust
+fn main() {
+	let foo = 1; // <--
+	let bar = 3;
+}
+```
+
+Memory
+
+.center[
+ Address | Name  | Value
+---------|-------|------
+   1     |       |
+   0     |  foo  |  1
+]
+---
+Main is called
+
+```rust
+fn main() {
+	let foo = 1; 
+	let bar = 3; // <--
+}
+```
+
+Memory
+
+.center[
+ Address | Name  | Value
+---------|-------|------
+   1     |  bar  |  3
+   0     |  foo  |  1
+]
+---
+# The stack
+.left-column[
+.center[
+ Address | Name  | Value
+---------|-------|------
+   1     |  bar  |  3
+   0     |  foo  |  1
+]
+]
+
+.right-column[
+- Memory for each local variable is allocated at the begining of the function
+- Because we know the size of type(e.g. i32), we know how much memory to allocate
+- It is then deallocated at the end
+- Very fast
+]
+---
+A little more complicated...
+```rust
+fn second_func() {
+	let baz = 4;
+	let qux = 4;
+	let post_qux = 4;
+	third_func();
+}
+
+fn third_func(){
+	let post_qux_plus_plus = 5;
+}
+
+fn main(){
+	let foo = 1;
+	let bar = 3;
+	second_func();
+}
+```
+---
+Call the main function
+.left-column[
+```rust
+fn second_func() {
+	let baz = 4;
+	let qux = 4;
+	let post_qux = 4;
+	third_func();
+}
+
+fn third_func(){
+	let post_qux_plus_plus = 5;
+}
+
+fn main(){ 
+	let foo = 1;
+	let bar = 3;
+	second_func(); // <--
+}
+```
+]
+.right-column[
+.center.ex2[
+ Address | Name  | Value
+---------|-------|------
+   1     |  bar  |  3
+   0     |  foo  |  1
+]
+]
+---
+Call second_func
+.left-column[
+```rust
+fn second_func() { // <--
+	let baz = 4;
+	let qux = 4;
+	let post_qux = 4;
+	third_func();
+}
+
+fn third_func(){
+	let post_qux_plus_plus = 5;
+}
+
+fn main(){ 
+	let foo = 1;
+	let bar = 3;
+	second_func(); 
+}
+```
+]
+.right-column[
+.center.ex2[
+ Address | Name  | Value
+---------|-------|------
+   4     |       |
+   3     |       |   
+   2     |       |
+   1     |  bar  |  3
+   0     |  foo  |  1
+]
+]
+---
+Call second_func
+.left-column[
+```rust
+fn second_func() {
+	let baz = 4;
+	let qux = 4;
+	let post_qux = 4;
+	third_func(); // <--
+}
+
+fn third_func(){
+	let post_qux_plus_plus = 5;
+}
+
+fn main(){ 
+	let foo = 1;
+	let bar = 3;
+	second_func(); 
+}
+```
+]
+.right-column[
+.center.ex2[
+ Address | Name  | Value
+---------|-------|------
+   4     |  post_qux| 4
+   3     |  qux  |  4
+   2     |  baz  |  4
+   1     |  bar  |  3
+   0     |  foo  |  1
+]
+]
+---
+Call third_func
+.left-column[
+```rust
+fn second_func() {
+	let baz = 4;
+	let qux = 4;
+	let post_qux = 4;
+	third_func(); 
+}
+
+fn third_func(){
+	let post_qux_plus_plus = 5; // <--
+}
+
+fn main(){ 
+	let foo = 1;
+	let bar = 3;
+	second_func(); 
+}
+```
+]
+.right-column[
+.center.ex2[
+ Address | Name  | Value
+---------|-------|------
+   5     |  post_qux_plus_plus| 5
+   4     |  post_qux| 4
+   3     |  qux  |  4
+   2     |  baz  |  4
+   1     |  bar  |  3
+   0     |  foo  |  1
+]
+]
+---
+Deallocation
+.left-column[
+```rust
+fn second_func() {
+	let baz = 4;
+	let qux = 4;
+	let post_qux = 4;
+	third_func(); 
+}
+
+fn third_func(){
+	let post_qux_plus_plus = 5;
+} // <--
+
+fn main(){ 
+	let foo = 1;
+	let bar = 3;
+	second_func(); 
+}
+```
+]
+.right-column[
+
+Last In, First Out (LIFO)
+
+.center.ex2[
+ Address | Name  | Value
+---------|-------|------
+   5     |  post_qux_plus_plus| 5
+   4     |  post_qux| 4
+   3     |  qux  |  4
+   2     |  baz  |  4
+   1     |  bar  |  3
+   0     |  foo  |  1
+]
+]
+---
+Deallocation
+.left-column[
+```rust
+fn second_func() {
+	let baz = 4;
+	let qux = 4;
+	let post_qux = 4;
+	third_func(); // <--
+}
+
+fn third_func(){
+	let post_qux_plus_plus = 5;
+} 
+
+fn main(){ 
+	let foo = 1;
+	let bar = 3;
+	second_func(); 
+}
+```
+]
+.right-column[
+
+Last In, First Out (LIFO)
+
+.center.ex2[
+ Address | Name  | Value
+---------|-------|------
+   4     |  post_qux| 4
+   3     |  qux  |  4
+   2     |  baz  |  4
+   1     |  bar  |  3
+   0     |  foo  |  1
+]
+]
+---
+Deallocation
+.left-column[
+```rust
+fn second_func() {
+	let baz = 4;
+	let qux = 4;
+	let post_qux = 4;
+	third_func(); 
+} // <--
+
+fn third_func(){
+	let post_qux_plus_plus = 5;
+} 
+
+fn main(){ 
+	let foo = 1;
+	let bar = 3;
+	second_func(); 
+}
+```
+]
+.right-column[
+
+Last In, First Out (LIFO)
+
+.center.ex2[
+ Address | Name  | Value
+---------|-------|------
+   1     |  bar  |  3
+   0     |  foo  |  1
+]
+]
+---
+Deallocation
+.left-column[
+```rust
+fn second_func() {
+	let baz = 4;
+	let qux = 4;
+	let post_qux = 4;
+	third_func(); 
+} 
+
+fn third_func(){
+	let post_qux_plus_plus = 5;
+} 
+
+fn main(){ 
+	let foo = 1;
+	let bar = 3;
+	second_func(); 
+} // <--
+```
+]
+---
+# Can we use The Stack for everything?
+- The stack has limited size.
+	- What if we need to store something huge?
+
+- Memory on the stack only live as long as the function
+	- What if we need to pass that memory to other function?
+	- What if we need that memory to last longer than function?
+
+- Memory on the stack requires us to know it's size
+	- What if we don't know the size before hand?
+	- What if we need change the size at runtime?
+---
+# The Heap
+- Only limited by the amount of memory in your machine
+- Can be accessed outside it's call frame
+- Can stay alive pass the function that allocated it
+- Does not have to be contiguous
+	- Means we don't have to know the size of the data before hand
+---
+# The Heap
+.left-column[
+- The Heap grows towards the stack
+
+- Not contiguos
+	- Not just a stack from the other end
+]
+.right-column[
+Highest place in memory
+.center[
+Address | Value
+--------|------
+  Huge  |
+  ...   |
+   1    |
+   0    |
+]
+]
+---
+# The Heap
+.left-column[
+```rust
+fn main(){
+	let foo = 1;
+	let bar = Box::new(3);
+}
+```
+In Rust we allocate on the heap by using the `Box<T>` type.
+]
+---
+# The Heap
+.left-column[
+```rust
+fn main(){
+	let foo = 1;
+	let bar = Box::new(3); // <--
+}
+```
+]
+.right-column[
+.center[
+ Address | Name | Value
+---------|------|-------
+    1    |      |
+    0    |  foo | 1 
+]
+]
+---
+# The Heap
+.left-column[
+```rust
+fn main(){
+	let foo = 1;
+	let bar = Box::new(3); // <--
+}
+```
+]
+.right-column[
+.center[
+ Address | Name | Value
+---------|------|-------
+ (2^30)-1|      | 3
+   ...   |      |
+    1    |      |
+    0    |  foo | 1 
+]
+]
+---
+# The Heap
+.left-column[
+```rust
+fn main(){
+	let foo = 1;
+	let bar = Box::new(3); // <--
+}
+```
+]
+.right-column[
+.center[
+ Address | Name | Value
+---------|------|-------
+ (2^30)-1|      | 3
+   ...   |      |
+    1    |  bar | &(2^30)-1
+    0    |  foo | 1 
+]
+]
+---
+# The Heap
+.left-column[
+```rust
+fn main(){
+	let foo = 1;
+	let bar = Box::new(3); // <--
+}
+```
+- Reference to memory located elsewhere
+- "Dereferencing" a pointer, is looking up it's location in memory
+]
+.right-column[
+.center[
+ Address | Name | Value
+---------|------|-------
+ (2^30)-1|      | 3
+   ...   |      |
+    1    |  bar | &(2^30)-1
+    0    |  foo | 1 
+]
+]
+---
+# The Heap
+.left-column[
+```rust
+fn main(){
+	let foo = 1;
+	let bar = Box::new(3); // <--
+}
+```
+- In Rust, pointers are signified by the & symbol
+]
+.right-column[
+.center[
+ Address | Name | Value
+---------|------|-------
+ (2^30)-1|      | 3
+   ...   |      |
+    1    |  bar | &(2^30)-1
+    0    |  foo | 1 
+]
+]
+---
+# The Heap
+.left-column[
+```rust
+fn main(){
+	let foo = 1;
+	let bar = Box::new(3);
+} // <--
+```
+]
+---
+# The Heap
+- Take a lot of work
+	- Figuring out the size of the data
+	- Finding an area large enough to store the data
+	- Storing the address in the stack
+	- And then having to dereference that pointer whenever we want to use it.
+
+- Allow us to use thing like `Vec<T>` and String, where we only know the size at runtime
+- Allow us to be much more flexible with lifetimes because it can live past the originating function, and can be referenced from multiple places.
+---
+- Rust is stack allocated by default.
+	- It is very clear when you are allocating on the heap
+	- We get a considerable performance boost from this.
+
+- Python and Ruby are heap allocated by default.
+	- Handled entirely by the interpreter, and so you have no control over it unless you FFI in some Rust
+---
+# Python
+```python
+def main():
+	foo = 1
+	bar = 3
+
+main()
+```
+
+#Rust
+```rust
+fn main(){
+	let foo = Box::new(1);
+	let bar = Box::new(3);
+}
+```
+---
+# Garbage Collection and RC
+- There are other ways of managing memory, such as garbage collection
+
+- Python and Ruby are both garbage collected languages.
+	- Pauses when the interpreter decides it's time to clean up
+	- Makes implementing certain datastructures like graphs significantly easier.
+
+- Rust does not have garbage collection...but it has RC
+	- RC stands for reference counting and is sort of a "GC-lite"
+---
+class: center, middle, dark
+# .biggest[Q&A]
+---
+# Futher Reading
+---
+class: center, middle, dark
+# Thank you!
+
+Email: nampnq@gmail.com
+
+Github/Reddit/Telegram: nampnq
+    </textarea>
+    <script src="../js/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
